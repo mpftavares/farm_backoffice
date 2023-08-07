@@ -1,0 +1,18 @@
+<div
+	class="card me-1"
+	style="width: 15rem">
+	<img
+		class="card-img-top p-3"
+		src="/images/sales/<?= $sale->id ?>.png"
+		alt="Card image cap" />
+
+	<div class="card-body">
+		<h5><?= $service->name ?></h5>
+		<p class="card-text"><?= $service->description ?></p>
+		<a
+			href="/services/detail?id=<?= $service->id ?>"
+			class="btn btn-primary btn-block w-100"
+			>Ver mais</a
+		>
+	</div>
+</div>

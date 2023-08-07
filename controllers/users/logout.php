@@ -1,0 +1,4 @@
+<?php 
+
+doLogout();
+redirect('/login');

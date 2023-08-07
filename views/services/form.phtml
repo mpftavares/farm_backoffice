@@ -1,0 +1,33 @@
+<h1 class="mb-5">Adicionar serviço</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="card-body">
+
+        <div class="mb-3">
+            <label for="nameInput" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nameInput" name="name" required autofocus value="<?= isset($service) ? $service->name : '' ?>">
+        </div>
+
+        <div class="mb-3">
+            <label for="descriptionInput" class="form-label">Descrição</label>
+            <textarea class="form-control" rows="4" id="descriptionInput" name="description" required value="<?= isset($service) ? $service->description : '' ?>"></textarea>
+        </div>
+    
+
+        <div class="mb-3">
+            <label for="label">Imagem</label>
+            <input type="file" name="image" id="imageInput" class="form-control">
+        </div>
+
+        <?php if (isset($service) && isset($service->image)) : ?>
+		<img
+			src="/<?= $service->image ?>"
+			class="img-thumbnail mt-2"
+			width="200" />
+		<?php endif; ?>
+    </div>
+
+    <div class="card-footer d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary mb-5">Guardar</button>
+    </div>
+</form>                

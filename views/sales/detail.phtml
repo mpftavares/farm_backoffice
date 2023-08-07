@@ -1,0 +1,38 @@
+<h5 class="card-header mb-3"><?= $sale->name ?></h5>
+
+<div class="card-body">
+	<div class="mb-3">
+		<?php if (isset($sale->image) && $sale->image !== null) { ?>
+			<img src="/<?= $sale->image ?>" class="img-thumbnail" width="100%" />
+		<?php } ?>
+	</div>
+
+	<ul class="list-group mb-3">
+		<li class="list-group-item">
+			<strong>Descrição</strong>
+			<?= $sale->description ?>
+		</li>
+		<li class="list-group-item">
+			<strong>Inicia a</strong>
+			<?= $sale->startDate ?>
+		</li>
+		<li class="list-group-item">
+			<strong>Termina a</strong>
+			<?= $sale->endDate ?>
+		</li>
+	</ul>
+</div>
+
+<div class="card-footer d-flex mb-5">
+		<a
+			href="/sales/edit?id=<?= $sale->id ?>"
+			class="btn btn-secondary w-100"
+			>Editar</a
+		>
+		<a
+			href="/sales/delete?id=<?= $sale->id ?>"
+			class="btn btn-danger w-100"
+			id="removeLink" onclick="return confirm('Tem a certeza que pretende remover a campanha?')"
+			>Remover</a
+		>
+</div>

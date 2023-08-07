@@ -1,0 +1,24 @@
+<form class="d-flex mb-4" action="/services/list" method="get">
+	<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
+	<button class="btn btn-outline-light" type="submit">Search</button>
+</form>
+
+<div class="d-flex flex-row flex-wrap mb-4>
+	<?php if (count($services) >
+	0) : foreach ($services as $service) : ?>
+
+	<?php render('services/card', ['service' =>
+	$service], false); ?>
+
+	<?php endforeach; else : ?>
+
+	<p>Não há serviços criados.</p>
+
+	<?php endif; ?>
+</div>
+
+<a
+	href="/services/create"
+	class="btn btn-primary mb-5 btn-lg w-100"
+	>Adicionar serviço</a
+>

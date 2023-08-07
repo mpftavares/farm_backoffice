@@ -1,0 +1,20 @@
+<div
+		class="card me-1"
+		style="width: 15rem">
+		<img
+			class="card-img-top p-3"
+			src="/images/sales/<?= $sale->id ?>.png"
+			alt="Card image cap" />
+
+		<div class="card-body">
+            <h5><?= $sale->name ?></h5>
+			<p class="card-text">
+				<?= $sale->description ?>
+			</p>
+			<a
+				href="/sales/detail?id=<?= $sale->id ?>"
+				class="btn btn-primary btn-block w-100"
+				>Ver mais</a
+			>
+		</div>
+	</div>

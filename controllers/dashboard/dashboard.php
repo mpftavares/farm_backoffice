@@ -1,0 +1,5 @@
+<?php
+
+verifyAccess();
+
+render('dashboard');
