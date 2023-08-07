@@ -35,29 +35,31 @@
 		</div>
 		<div class="mb-3">
 			<label
-				for="startDate"
+				for="starts"
 				class="form-label"
 				>Inicia a</label
 			>
 			<input
 				type="date"
 				class="form-control"
-				id="startDate"
-				name="startDate"
-				value="<?= isset($sale) ? $sale->startDate : '' ?>" />
+				id="starts"
+				name="starts"
+				required
+				value="<?= isset($sale) ? $sale->starts : '' ?>" />
 		</div>
 		<div class="mb-3">
 			<label
-				for="endDate"
+				for="ends"
 				class="form-label"
 				>Termina a</label
 			>
 			<input
 				type="date"
 				class="form-control"
-				id="endDate"
-				name="endDate"
-				value="<?= isset($sale) ? $sale->endDate : '' ?>" />
+				id="ends"
+				name="ends"
+				required
+				value="<?= isset($sale) ? $sale->ends : '' ?>" />
 		</div>
 
 		<div class="mb-3">

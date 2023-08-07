@@ -1,33 +1,15 @@
 <?php
 
-define('DATA_USERS_PATH', '../data/users/'); 
-// defines a named constant
-
-function getAllUsers(): array
-{
-    $files = glob(DATA_USERS_PATH . '*.json'); // glob finds pathnames matching a pattern
-    $users = [];
-
-    foreach ($files as $file) {
-        $json = file_get_contents(($file));
-        // $users[] = (array)json_decode($json);
-        $users[] = json_decode($json);
-    }
-
-    return $users;
-}
-
 function getUserByUsername(string $username): ?stdClass
 {
-    $users = getAllUsers();
+    $connection = getConnection();
+    $sql = "SELECT * FROM users WHERE username = :username LIMIT 1";
+    $stmt = $connection->prepare($sql);
+    $stmt->execute([
+        'username' => $username
+    ]);
 
-    foreach ($users as $user) {
-        if ($user->username === $username) {
-            return $user;
-        }
-    }
-
-    return null;
+    return $stmt->fetch();
 }
 
 function attemptLogin(string $username, string $password): bool
@@ -37,43 +19,46 @@ function attemptLogin(string $username, string $password): bool
     if (!is_null($user) && password_verify($password, $user->password)) {
         $_SESSION['user'] = $user;
 
-        logAccess($username, 'logged in');
+        logAccess('logged in');
 
         return true;
     }
     return false;
 }
 
-function verifyAccess(): void {
+function verifyAccess(): void
+{
     if (!isset($_SESSION['user'])) {
         redirect("/login?status=403");
     }
 }
 
-function doLogout(): void {
-    $user = $_SESSION['user'];
-
-    logAccess($user->name, 'logged out');
+function doLogout(): void
+{
+    logAccess('logged out');
 
     unset($_SESSION['user']);
 }
 
-function logAccess(string $username, $message): void {
-    $log = sprintf("[%s] user %s %s from %s\n", date('Y-m-d H:i:s'), $username, $message, $_SERVER['REMOTE_ADDR']);
+function logAccess($message): void
+{
+    $user = $_SESSION['user'];
+
+    $log = sprintf("[%s] %s %s from %s\n", date('Y-m-d H:i:s'), $user->name, $message, $_SERVER['REMOTE_ADDR']);
     file_put_contents('../logs/access.log', $log, FILE_APPEND);
 }
 
-function createUser(string $name, string $username, string $password): void {
-    $id = uniqid();
-   
-    $user = new stdClass();
+function createUser(string $name, string $username, string $password): void
+{
+    $connection = getConnection();
 
-    $user->id = $id;
-    $user->name = $name;
-    $user->username = $username;
-    $user->password = password_hash($password, PASSWORD_BCRYPT);
+    $sql = 'INSERT INTO users (name, username, password) VALUES (:name, :username, :password)';
+    $stmt = $connection->prepare($sql);
+    $stmt->execute([
+        'name' => $name, 
+        'username' => $username,
+        'password' => password_hash($password, PASSWORD_BCRYPT)
+    ]);
 
-    $filePath = DATA_USERS_PATH . $id . '.json';
-    $json = json_encode($user);
-    file_put_contents($filePath, $json);
+
 };

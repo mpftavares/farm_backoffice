@@ -3,6 +3,7 @@
 require_once '../services/users.php';
 require_once '../services/sales.php';
 require_once '../core/http.php';
+require_once '../core/database.php';
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();

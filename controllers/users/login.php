@@ -2,6 +2,13 @@
 
 $messages = [];
 
+if (isset($_GET['message'])) {
+    $messages[] = [
+        'type' => 'info',
+        'message' => $_GET['message']
+    ];
+}
+
 if (isPost()) {
     [
         'username' => $username,
@@ -18,12 +25,7 @@ if (isPost()) {
     ];
 }
 
-if (isset($_GET['message'])) {
-    $messages[] = [
-        'type' => 'info',
-        'message' => $_GET['message']
-    ];
-}
+
 
 render(
     'users/login',

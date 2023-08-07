@@ -1,31 +1,32 @@
 <?php
 
-define('DATA_SALES_PATH', '../data/sales/');
-
-function createSale(string $name, string $description, string $startDate, string $endDate, array $imageFile): stdClass
+function createSale(string $name, string $description, string $starts, string $ends, array $imageFile): stdClass
 {
+    $image = uploadImage($imageFile);
 
-    $id = uniqid();
-    $image = uploadImage($imageFile, $id);
+    $connection = getConnection();
 
-    $sale = new stdClass();
+    $sql = 'INSERT INTO sales (name, description, starts, ends, image) VALUES (:name, :description, :starts, :ends, :image)';
+    $stmt = $connection->prepare($sql);
+    $stmt->execute([
+        'name' => $name,
+        'description' => $description,
+        'starts' => $starts,
+        'ends' => $ends,
+        'image' => $image
+    ]);
 
-    $sale->id = $id;
-    $sale->name = $name;
-    $sale->description = $description;
-    $sale->startDate = $startDate;
-    $sale->endDate = $endDate;
-    $sale->image = $image;
+    $id = $connection->lastInsertId();
 
-    $filePath = DATA_SALES_PATH . $id . '.json';
-    $json = json_encode($sale);
-    file_put_contents($filePath, $json);
+    logSales('created', $id);
 
-    return $sale;
+    return getSaleById($id);
 }
 
-function uploadImage(array $file, string $id): ?string
+function uploadImage(array $file): ?string
 {
+    $id = uniqid();
+
     $filename = "images/sales/$id.png";
 
     if (move_uploaded_file($file['tmp_name'], $filename)) {
@@ -36,75 +37,87 @@ function uploadImage(array $file, string $id): ?string
 
 function getAllSales(string $filter = null): array
 {
-    $files = glob(DATA_SALES_PATH . '*.json');
-
-    // $sales = [];
-
-    // foreach ($files as $file) {
-    //     $json = file_get_contents(($file));
-    //     $sale = json_decode($json);
-    //     $sales[] = $sale;
-    // }
-
-    $sales = array_map(function ($file) {
-        $json = file_get_contents($file);
-        return json_decode($json);
-    }, $files);
+    $sql = "SELECT * FROM sales";
+    $data = [];
 
     if (!is_null($filter)) {
-        $filter = strtolower($filter);
-        $sales = array_filter($sales, fn ($sales) => str_contains(strtolower($sales->name), $filter));
+        $sql .= " WHERE (name LIKE :filter OR description LIKE :filter)";
+        $data['filter'] = '%' . $filter . '%';
     }
 
-    return $sales;
+    $connection = getConnection();
+    $stmt = $connection->prepare($sql);
+    $stmt->execute($data);
+
+    return $stmt->fetchAll();
 }
 
 function getSaleById(string $id): ?stdClass
 {
-    $sales = getAllSales();
+    $sql = "SELECT * FROM sales WHERE id = :id";
 
-    foreach ($sales as $sale) {
-        if ($sale->id === $id) {
-            return $sale;
-        }
-    }
+    $connection = getConnection();
+    $stmt = $connection->prepare($sql);
+    $stmt->execute(['id' => $id]);
 
-    return null;
+    return $stmt->fetch();
 }
 
-function updateSale(string $id, string $name, string $description, string $startDate, string $endDate, array $imageFile): stdClass
+function updateSale(string $id, string $name, string $description, string $starts, string $ends, array $imageFile): stdClass
 {
-    $sale = getSaleById($id);
+    $sql = "UPDATE sales SET name = :name, description = :description, starts = :starts, ends = :ends";
+    
+    $data = [
+        'id' => $id,
+        'name' => $name,
+        'description' => $description,
+        'starts' => $starts,
+        'ends' => $ends,
+    ];
 
-    $sale->name = $name;
-    $sale->description = $description;
-    $sale->startDate = $startDate;
-    $sale->endDate = $endDate;
-
-    if ($imageFile) {
-        $image = uploadImage($imageFile, $id);
+    if ($imageFile['name'] != '') {
+        $image = uploadImage($imageFile);
+        $sql .= ", photo = :photo";
+        $data['image'] = $image;
     }
 
-    $sale->image = isset($image) ? $image : $sale->image;
+    $sql .= " WHERE id = :id";
 
-    $filePath = DATA_SALES_PATH . $id . '.json';
-    $json = json_encode($sale);
-    file_put_contents($filePath, $json);
+    $connection = getConnection();
+    $stmt = $connection->prepare($sql);
+    $stmt->execute($data);
 
-    return $sale;
+    logSales('updated', $id);
+
+    return getSaleById($id);
 }
 
-function removeSale(string $id): bool {
-    $saleFile = DATA_SALES_PATH . $id . '.json';
+function removeSale(string $id): bool
+{
     $sale = getSaleById($id);
 
     if ($sale->image) {
         unlink($sale->image);
     }
 
-    if (!file_exists($saleFile)) {
-            return false;
-    }
+    $sql = "DELETE FROM sales WHERE id = :id";
 
-    return unlink($saleFile);
+    $connection = getConnection();
+    $stmt = $connection->prepare($sql);
+    $stmt->execute([
+        'id' => $id
+    ]);
+
+    logSales('deleted', $id);
+
+    return $stmt->rowCount() > 0;
 };
+
+function logSales($message, $id): void
+{
+
+    $user = $_SESSION['user'];
+
+    $log = sprintf("[%s] %s %s sale %s from %s\n", date('Y-m-d H:i:s'), $user->name, $message, $id, $_SERVER['REMOTE_ADDR']);
+    file_put_contents('../logs/sales.log', $log, FILE_APPEND);
+}
