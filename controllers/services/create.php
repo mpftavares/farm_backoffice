@@ -2,14 +2,14 @@
 
 verifyAccess();
 
-// if (isPost()) {
-//     ['name' => $name, 'description' => $description] = $_POST;
+if (isPost()) {
+    ['name' => $name, 'description' => $description] = $_POST;
 
-//     ['image' => $image] = $_FILES;
+    ['image' => $image] = $_FILES;
 
-//     $service = createService($name, $description, $image);
+    $service = createService($name, $description, $image);
 
-//     redirect('/services/detail?id=' . $service->id);
-// }
+    redirect('/services/detail?id=' . $service->id);
+}
 
-// render('services/form');
+render('services/form');

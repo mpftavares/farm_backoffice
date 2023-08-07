@@ -9,8 +9,8 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 
-$service = getServiceById($id);
+$sale = getServiceById($id);
 
-render('services/detail', [
-    'service' => $service
-]);
+removeService($id);
+
+redirect('/services/list');

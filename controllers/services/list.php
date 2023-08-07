@@ -2,10 +2,12 @@
 
 verifyAccess();
 
-// $search = isset($_GET['search']) ? $_GET['search'] : 'null';
+$search = isset($_GET['search']) ? $_GET['search'] : null;
 
-// $sales = getAllServices($search);
+$services = getAllServices($search);
 
-// render('services/list', [
-//     'services' => $services
-// ]);
+$search = '';
+
+render('services/list', [
+    'services' => $services
+]);

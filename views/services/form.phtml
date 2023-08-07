@@ -27,12 +27,12 @@
 				>Descrição</label
 			>
 			<textarea
-				class="form-control"
-				rows="4"
-				id="descriptionInput"
-				name="description"
-				required
-				value="<?= isset($service) ? $service->description : '' ?>"></textarea>
+			class="form-control"
+			rows="4"
+			id="descriptionInput"
+			name="description"
+			required
+			><?= isset($service) ? $service->description : '' ?></textarea>
 		</div>
 
 		<div class="mb-3">
@@ -41,7 +41,7 @@
 				type="file"
 				name="image"
 				id="imageInput"
-				class="form-control"/>
+				class="form-control" />
 		</div>
 
 		<?php if (isset($service) && isset($service->image)) : ?>

@@ -2,6 +2,7 @@
 
 require_once '../services/users.php';
 require_once '../services/sales.php';
+require_once '../services/services.php';
 require_once '../core/http.php';
 require_once '../core/database.php';
 

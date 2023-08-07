@@ -1,0 +1,32 @@
+<h5 class="card-header mb-3"><?= $service->name ?></h5>
+
+<div class="card-body">
+	<div class="mb-3">
+		<img
+			src="/<?= $service->image ?>"
+			class="img-thumbnail"
+			width="100%" />
+	</div>
+
+	<ul class="list-group mb-3">
+		<li class="list-group-item">
+			<strong>Descrição</strong>
+			<?= $service->description ?>
+		</li>
+	</ul>
+</div>
+
+<div class="card-footer d-flex mb-5">
+	<a
+		href="/services/edit?id=<?= $service->id ?>"
+		class="btn btn-secondary w-100"
+		>Editar</a
+	>
+	<a
+		href="/services/delete?id=<?= $service->id ?>"
+		class="btn btn-danger w-100"
+		id="removeLink"
+		onclick="return confirm('Tem a certeza que pretende remover o serviço?')"
+		>Remover</a
+	>
+</div>

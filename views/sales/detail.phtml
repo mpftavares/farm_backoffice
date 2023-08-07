@@ -2,9 +2,10 @@
 
 <div class="card-body">
 	<div class="mb-3">
-		<?php if (isset($sale->image) && $sale->image !== null) { ?>
-			<img src="/<?= $sale->image ?>" class="img-thumbnail" width="100%" />
-		<?php } ?>
+		<img
+			src="/<?= $sale->image ?>"
+			class="img-thumbnail"
+			width="100%" />
 	</div>
 
 	<ul class="list-group mb-3">
@@ -24,15 +25,16 @@
 </div>
 
 <div class="card-footer d-flex mb-5">
-		<a
-			href="/sales/edit?id=<?= $sale->id ?>"
-			class="btn btn-secondary w-100"
-			>Editar</a
-		>
-		<a
-			href="/sales/delete?id=<?= $sale->id ?>"
-			class="btn btn-danger w-100"
-			id="removeLink" onclick="return confirm('Tem a certeza que pretende remover a campanha?')"
-			>Remover</a
-		>
+	<a
+		href="/sales/edit?id=<?= $sale->id ?>"
+		class="btn btn-secondary w-100"
+		>Editar</a
+	>
+	<a
+		href="/sales/delete?id=<?= $sale->id ?>"
+		class="btn btn-danger w-100"
+		id="removeLink"
+		onclick="return confirm('Tem a certeza que pretende remover a campanha?')"
+		>Remover</a
+	>
 </div>
