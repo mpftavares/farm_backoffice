@@ -3,7 +3,7 @@
 function redirect(string $url): void
 {
     header("Location: $url");
-    die;
+    die();
 }
 
 function render(string $name, array $data = null, bool $layout = true): void
@@ -28,6 +28,7 @@ function render(string $name, array $data = null, bool $layout = true): void
     }
 }
 
-function isPost() {
+function isPost()
+{
     return $_SERVER['REQUEST_METHOD'] === 'POST';
 }

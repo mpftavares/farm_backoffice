@@ -27,12 +27,13 @@
 				>Descrição</label
 			>
 			<textarea
-			class="form-control"
-			rows="4"
-			id="descriptionInput"
-			name="description"
-			required
-			><?= isset($service) ? $service->description : '' ?></textarea>
+				class="form-control"
+				rows="4"
+				id="descriptionInput"
+				name="description"
+				required>
+<?= isset($service) ? $service->description : '' ?></textarea
+			>
 		</div>
 
 		<div class="mb-3">

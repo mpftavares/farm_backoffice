@@ -4,17 +4,19 @@ function createSale(string $name, string $description, string $starts, string $e
 {
     $image = uploadImage($imageFile);
 
-    $connection = getConnection();
+    $connection = connect();
 
     $sql = 'INSERT INTO sales (name, description, starts, ends, image) VALUES (:name, :description, :starts, :ends, :image)';
-    $stmt = $connection->prepare($sql);
-    $stmt->execute([
+
+    $data = [
         'name' => $name,
         'description' => $description,
         'starts' => $starts,
         'ends' => $ends,
         'image' => $image
-    ]);
+    ];
+
+    raw($sql, $data);
 
     $id = $connection->lastInsertId();
 
@@ -45,9 +47,7 @@ function getAllSales(string $filter = null): array
         $data['filter'] = '%' . $filter . '%';
     }
 
-    $connection = getConnection();
-    $stmt = $connection->prepare($sql);
-    $stmt->execute($data);
+    $stmt = raw($sql, $data);
 
     return $stmt->fetchAll();
 }
@@ -55,10 +55,8 @@ function getAllSales(string $filter = null): array
 function getSaleById(string $id): ?stdClass
 {
     $sql = "SELECT * FROM sales WHERE id = :id";
-
-    $connection = getConnection();
-    $stmt = $connection->prepare($sql);
-    $stmt->execute(['id' => $id]);
+    $data = ['id' => $id];
+    $stmt = raw($sql, $data);
 
     return $stmt->fetch();
 }
@@ -66,7 +64,7 @@ function getSaleById(string $id): ?stdClass
 function updateSale(string $id, string $name, string $description, string $starts, string $ends, array $imageFile): stdClass
 {
     $sql = "UPDATE sales SET name = :name, description = :description, starts = :starts, ends = :ends";
-    
+
     $data = [
         'id' => $id,
         'name' => $name,
@@ -83,9 +81,7 @@ function updateSale(string $id, string $name, string $description, string $start
 
     $sql .= " WHERE id = :id";
 
-    $connection = getConnection();
-    $stmt = $connection->prepare($sql);
-    $stmt->execute($data);
+    raw($sql, $data);
 
     logSales('updated', $id);
 
@@ -101,12 +97,11 @@ function removeSale(string $id): bool
     }
 
     $sql = "DELETE FROM sales WHERE id = :id";
-
-    $connection = getConnection();
-    $stmt = $connection->prepare($sql);
-    $stmt->execute([
+    $data = [
         'id' => $id
-    ]);
+    ];
+
+    $stmt = raw($sql, $data);
 
     logSales('deleted', $id);
 

@@ -1,6 +1,7 @@
 <?php
 
-function getConnection(): PDO {
+function connect(): PDO
+{
     $config = require '../config/database.php';
     extract($config);
 
@@ -14,4 +15,13 @@ function getConnection(): PDO {
         header('HTTP/1.1 500 Internal Server Error');
         die('Error connecting to database: ' . $e->getMessage());
     }
+}
+
+function raw(string $sql, array $data): PDOStatement
+{
+    $connection = connect();
+
+    $stmt = $connection->prepare($sql);
+    $stmt->execute($data);
+    return $stmt;
 }

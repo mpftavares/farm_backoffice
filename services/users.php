@@ -2,12 +2,11 @@
 
 function getUserByUsername(string $username): ?stdClass
 {
-    $connection = getConnection();
     $sql = "SELECT * FROM users WHERE username = :username LIMIT 1";
-    $stmt = $connection->prepare($sql);
-    $stmt->execute([
+    $data = [
         'username' => $username
-    ]);
+    ];
+    $stmt = raw($sql, $data);
 
     return $stmt->fetch();
 }
@@ -50,15 +49,12 @@ function logAccess($message): void
 
 function createUser(string $name, string $username, string $password): void
 {
-    $connection = getConnection();
-
     $sql = 'INSERT INTO users (name, username, password) VALUES (:name, :username, :password)';
-    $stmt = $connection->prepare($sql);
-    $stmt->execute([
-        'name' => $name, 
+    $data = [
+        'name' => $name,
         'username' => $username,
         'password' => password_hash($password, PASSWORD_BCRYPT)
-    ]);
+    ];
 
-
+    raw($sql, $data);
 };
